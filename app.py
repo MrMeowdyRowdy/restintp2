@@ -18,8 +18,7 @@ class Reservation(db.Model):
     status = db.Column(db.String, default="active")
 
 # Inicialización de la base de datos
-@app.before_first_request
-def setup_db():
+with app.app_context():
     db.create_all()
 
 # Endpoint para crear una reserva
