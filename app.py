@@ -25,22 +25,27 @@ with app.app_context():
 @app.route('/reservations', methods=['POST'])
 def create_reservation():
     data = request.json
+    print("Datos recibidos:", data)  # Log de datos recibidos
+
     # Verificar disponibilidad con el servicio SOAP
     soap_url = "http://soap-service:5000/soap"  # Cambiar si el servicio SOAP está en otro host
     soap_request = f"""
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://luxurystay.com/soap">
-        <soapenv:Header/>
-        <soapenv:Body>
-            <soap:getAvailability>
-                <soap:start_date>{data['start_date']}</soap:start_date>
-                <soap:end_date>{data['end_date']}</soap:end_date>
-                <soap:room_type>{data['room_type']}</soap:room_type>
-            </soap:getAvailability>
-        </soapenv:Body>
-    </soapenv:Envelope>
+        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tns="http://luxurystay.com/soap">
+            <soapenv:Header/>
+            <soapenv:Body>
+                <tns:get_availability>
+                    <tns:start_date>{data['start_date']}</tns:start_date>
+                    <tns:end_date>{data['end_date']}</tns:end_date>
+                    <tns:room_type>{data['room_type']}</tns:room_type>
+                </tns:get_availability>
+            </soapenv:Body>
+        </soapenv:Envelope>
     """
+
+    print("Solicitud SOAP enviada:", soap_request)  # Log de solicitud SOAP
     headers = {'Content-Type': 'text/xml'}
     response = requests.post(soap_url, data=soap_request, headers=headers)
+    print("Respuesta SOAP:", response.text)  # Log de respuesta SOAP
 
     if "room" not in response.text:
         return jsonify({"error": "No rooms available"}), 400
