@@ -26,7 +26,7 @@ with app.app_context():
 def create_reservation():
     data = request.json
     # Verificar disponibilidad con el servicio SOAP
-    soap_url = "http://localhost:5000/soap"  # Cambiar si el servicio SOAP está en otro host
+    soap_url = "http://soap-service:5000/soap"  # Cambiar si el servicio SOAP está en otro host
     soap_request = f"""
     <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soap="http://luxurystay.com/soap">
         <soapenv:Header/>
